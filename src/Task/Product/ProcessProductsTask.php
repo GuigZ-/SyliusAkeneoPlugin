@@ -75,20 +75,25 @@ final class ProcessProductsTask extends AbstractProcessTask
 
         $this->handleProducts($payload, $resources, $count, $ids);
 
-        if ($count > 0 && $payload->isBatchingAllowed() && $payload->getProcessAsSoonAsPossible() && $payload->allowParallel()) {
+        if ($count === 0) {
+            return $payload;
+        }
+
+        if ($payload->isBatchingAllowed() && $payload->getProcessAsSoonAsPossible() && $payload->allowParallel()) {
             $this->logger->notice('Batching', ['from_id' => $ids[0], 'to_id' => $ids[\count($ids) - 1]]);
             $this->batch($payload, $ids);
+
+            return $payload;
         }
 
-        if ($count > 0 && !$payload->isBatchingAllowed()) {
+        if (!$payload->isBatchingAllowed()) {
             $payload->setIds($ids);
             $this->task->__invoke($payload);
+
+            return $payload;
         }
 
-        if ($count > 0 && !$payload->getProcessAsSoonAsPossible()) {
-            $this->process($payload);
-        }
-
+        $this->process($payload);
         $this->processManager->waitForAllProcesses();
 
         return $payload;
