@@ -13,14 +13,17 @@ use Sylius\Component\Attribute\Model\AttributeInterface;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Synolia\SyliusAkeneoPlugin\Checker\EditionCheckerInterface;
 use Synolia\SyliusAkeneoPlugin\Checker\IsEnterpriseCheckerInterface;
 use Synolia\SyliusAkeneoPlugin\Event\Attribute\AfterProcessingAttributeEvent;
 use Synolia\SyliusAkeneoPlugin\Event\Attribute\BeforeProcessingAttributeEvent;
 use Synolia\SyliusAkeneoPlugin\Exceptions\Attribute\ExcludedAttributeException;
 use Synolia\SyliusAkeneoPlugin\Exceptions\Attribute\InvalidAttributeException;
+use Synolia\SyliusAkeneoPlugin\Exceptions\NoAttributeResourcesException;
 use Synolia\SyliusAkeneoPlugin\Exceptions\UnsupportedAttributeTypeException;
 use Synolia\SyliusAkeneoPlugin\Logger\Messages;
 use Synolia\SyliusAkeneoPlugin\Payload\AbstractPayload;
+use Synolia\SyliusAkeneoPlugin\Payload\Attribute\AttributePayload;
 use Synolia\SyliusAkeneoPlugin\Payload\PipelinePayloadInterface;
 use Synolia\SyliusAkeneoPlugin\Processor\ProductAttribute\ProductAttributeChoiceProcessorInterface;
 use Synolia\SyliusAkeneoPlugin\Processor\ProductOption\ProductOptionProcessorInterface;
@@ -61,7 +64,7 @@ final class BatchAttributesTask extends AbstractBatchTask
 
     private ProductOptionProcessorInterface $productOptionProcessor;
 
-    private IsEnterpriseCheckerInterface $isEnterpriseChecker;
+    private EditionCheckerInterface $editionChecker;
 
     public function __construct(
         SyliusAkeneoLocaleCodeProvider $syliusAkeneoLocaleCodeProvider,
@@ -76,7 +79,7 @@ final class BatchAttributesTask extends AbstractBatchTask
         ProductAttributeChoiceProcessorInterface $attributeChoiceProcessor,
         ProductOptionProcessorInterface $productOptionProcessor,
         EventDispatcherInterface $dispatcher,
-        IsEnterpriseCheckerInterface $isEnterpriseChecker
+        EditionCheckerInterface $editionChecker
     ) {
         parent::__construct($entityManager);
 
@@ -91,13 +94,13 @@ final class BatchAttributesTask extends AbstractBatchTask
         $this->configurationProvider = $configurationProvider;
         $this->attributeChoiceProcessor = $attributeChoiceProcessor;
         $this->productOptionProcessor = $productOptionProcessor;
-        $this->isEnterpriseChecker = $isEnterpriseChecker;
+        $this->editionChecker = $editionChecker;
     }
 
     /**
-     * @param \Synolia\SyliusAkeneoPlugin\Payload\Attribute\AttributePayload $payload
+     * @param AttributePayload $payload
      *
-     * @throws \Synolia\SyliusAkeneoPlugin\Exceptions\NoAttributeResourcesException
+     * @throws NoAttributeResourcesException
      * @throws \Throwable
      */
     public function __invoke(PipelinePayloadInterface $payload): PipelinePayloadInterface
@@ -108,7 +111,7 @@ final class BatchAttributesTask extends AbstractBatchTask
 
         try {
             $excludesAttributes = $this->excludedAttributesProvider->getExcludedAttributes();
-            $isEnterprise = $this->isEnterpriseChecker->isEnterprise();
+            $isEnterprise = $this->editionChecker->isEnterprise() || $this->editionChecker->isSerenityEdition();
             $this->entityManager->beginTransaction();
 
             $query = $this->getSelectStatement($payload);

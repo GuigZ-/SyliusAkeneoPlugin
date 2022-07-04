@@ -82,6 +82,11 @@ sylius:
                     subtitle: Configuration des attributs
                 medias:
                     medias: Médias
+                editions:
+                    ce: Community Edition
+                    ee: Enterprise Edition
+                    ge: Growth Edition
+                    serenity: Serenity Edition
         reference_entity: 'Entité référentielle'
     form:
         attribute_type:

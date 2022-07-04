@@ -42,9 +42,7 @@ final class ApiConfigurationType extends AbstractType
                     'max' => ApiConfiguration::MAX_AKENEO_PAGINATION_SIZE,
                 ],
             ])
-            ->add('isEnterprise', CheckboxType::class, [
-                'required' => false,
-                'label' => 'sylius.ui.admin.akeneo.api_configuration.is_enterprise',
+            ->add('edition', AkeneoEditionChoiceType::class, [
             ])
             ->add('testCredentials', SubmitType::class, [
                 'attr' => ['class' => 'ui secondary button'],

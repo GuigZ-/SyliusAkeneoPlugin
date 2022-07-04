@@ -6,7 +6,7 @@ CONSOLE=cd tests/Application && php bin/console -e test
 COMPOSER=cd tests/Application && composer
 YARN=cd tests/Application && yarn
 
-SYLIUS_VERSION=1.11.0
+SYLIUS_VERSION=1.10.0
 SYMFONY_VERSION=5.4
 PHP_VERSION=8.0
 PLUGIN_NAME=synolia/sylius-akeneo-plugin

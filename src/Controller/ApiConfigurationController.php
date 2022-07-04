@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Synolia\SyliusAkeneoPlugin\Client\ClientFactoryInterface;
 use Synolia\SyliusAkeneoPlugin\Entity\ApiConfiguration;
+use Synolia\SyliusAkeneoPlugin\Entity\ApiConfigurationInterface;
 use Synolia\SyliusAkeneoPlugin\Form\Type\ApiConfigurationType;
 
 final class ApiConfigurationController extends AbstractController
@@ -45,7 +46,7 @@ final class ApiConfigurationController extends AbstractController
 
     public function __invoke(Request $request): Response
     {
-        /** @var ApiConfiguration|null $apiConfiguration */
+        /** @var ApiConfigurationInterface|null $apiConfiguration */
         $apiConfiguration = $this->apiConfigurationRepository->findOneBy([]);
 
         if (!$apiConfiguration instanceof ApiConfiguration) {

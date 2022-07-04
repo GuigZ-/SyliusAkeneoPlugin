@@ -17,6 +17,7 @@ use Psr\Log\LoggerInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Symfony\Component\Process\Process;
 use Synolia\SyliusAkeneoPlugin\Entity\ApiConfiguration;
+use Synolia\SyliusAkeneoPlugin\Entity\ApiConfigurationInterface;
 use Synolia\SyliusAkeneoPlugin\Exceptions\ApiNotConfiguredException;
 use Synolia\SyliusAkeneoPlugin\Logger\Messages;
 use Synolia\SyliusAkeneoPlugin\Payload\PipelinePayloadInterface;
@@ -143,7 +144,7 @@ abstract class AbstractProcessTask implements AkeneoTaskInterface
         $this->type = $initialPayload->getType();
         $this->logger->notice(Messages::createOrUpdate($this->type));
 
-        /** @var ApiConfiguration|null $apiConfiguration */
+        /** @var ApiConfigurationInterface|null $apiConfiguration */
         $apiConfiguration = $this->apiConfigurationRepository->findOneBy([]);
 
         if (!$apiConfiguration instanceof ApiConfiguration) {

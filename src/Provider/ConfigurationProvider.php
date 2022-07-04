@@ -7,6 +7,7 @@ namespace Synolia\SyliusAkeneoPlugin\Provider;
 use Exception;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Synolia\SyliusAkeneoPlugin\Entity\ApiConfiguration;
+use Synolia\SyliusAkeneoPlugin\Entity\ApiConfigurationInterface;
 
 final class ConfigurationProvider
 {
@@ -19,7 +20,7 @@ final class ConfigurationProvider
         $this->apiConfigurationRepository = $apiConfigurationRepository;
     }
 
-    public function getConfiguration(): ApiConfiguration
+    public function getConfiguration(): ApiConfigurationInterface
     {
         if ($this->configuration instanceof ApiConfiguration) {
             return $this->configuration;

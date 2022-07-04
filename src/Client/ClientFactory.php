@@ -8,6 +8,7 @@ use Akeneo\PimEnterprise\ApiClient\AkeneoPimEnterpriseClientBuilder;
 use Akeneo\PimEnterprise\ApiClient\AkeneoPimEnterpriseClientInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 use Synolia\SyliusAkeneoPlugin\Entity\ApiConfiguration;
+use Synolia\SyliusAkeneoPlugin\Entity\ApiConfigurationInterface;
 
 final class ClientFactory implements ClientFactoryInterface
 {
@@ -21,7 +22,7 @@ final class ClientFactory implements ClientFactoryInterface
 
     public function createFromApiCredentials(): AkeneoPimEnterpriseClientInterface
     {
-        /** @var ApiConfiguration|null $apiConfiguration */
+        /** @var ApiConfigurationInterface|null $apiConfiguration */
         $apiConfiguration = $this->apiConfigurationRepository->findOneBy([]);
 
         if (!$apiConfiguration instanceof ApiConfiguration) {
@@ -31,7 +32,7 @@ final class ClientFactory implements ClientFactoryInterface
         return $this->authenticateByPassword($apiConfiguration);
     }
 
-    public function authenticateByPassword(ApiConfiguration $apiConfiguration): AkeneoPimEnterpriseClientInterface
+    public function authenticateByPassword(ApiConfigurationInterface $apiConfiguration): AkeneoPimEnterpriseClientInterface
     {
         $client = new AkeneoPimEnterpriseClientBuilder($apiConfiguration->getBaseUrl() ?? '');
 
